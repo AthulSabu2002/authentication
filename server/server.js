@@ -25,7 +25,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 
-
 app.set('trust proxy', 1) 
 
 app.use(
@@ -51,10 +50,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/users', userRouter);
-
-
-
-
 
 app.use(function(req, res, next) {
   next(createError(404));

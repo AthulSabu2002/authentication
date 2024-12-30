@@ -6,14 +6,28 @@ const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 
 
-
 const loginUser = asyncHandler(async(req, res) => {
-  const { email, password } = req.body;
-  
-  console.log(req.body)
-  
-  
-  res.status(200).json({ message: 'got data' });
+    const { email, password } = req.body;
+
+    if (!email || !password){
+        return res.status(400).json({ message: 'Email and password are mandatory.' });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        return res.status(400).json({ message: 'Invalid email or password.' });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+        return res.status(400).json({ message: 'Invalid email or password.' });
+    }
+    
+    
+    res.status(200).json({ message: 'Login successful.' });
+
 });
 
 
@@ -30,7 +44,8 @@ const registerUser = asyncHandler(async(req, res) => {
         return res.status(400).json({ message: 'User already exists.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
   
     const newUser = new User({
         fullName,
@@ -39,6 +54,7 @@ const registerUser = asyncHandler(async(req, res) => {
     });
 
     await newUser.save();
+
     return res.status(201).json({ message: 'User registered successfully.' });
 });
 
