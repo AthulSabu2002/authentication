@@ -10,9 +10,13 @@ const createError = require('http-errors');
 const flash = require('connect-flash');
 const bodyParser = require('body-parser');
 const app = require('express')();
+const cors = require('cors');
 
 const port = process.env.PORT || 3000;
 
+const userRouter = require('./routes/userRouter');
+
+app.use(cors());
 app.use(flash());
 app.use(logger('dev'));
 app.use(express.json());
@@ -45,6 +49,10 @@ app.use((req, res, next) => {
   res.header('Expires', '0');
   next();
 });
+
+app.use('/users', userRouter);
+
+
 
 
 
