@@ -1,4 +1,4 @@
-# Modern Authentication System
+# Authentication System
 
 A full-stack authentication system built with the MERN stack (MongoDB, Express.js, React, Node.js) featuring both traditional email/password authentication and OAuth integration.
 
@@ -135,7 +135,7 @@ GET /api/auth/github - GitHub OAuth
 ## 👨‍💻 Author
 
 Your Name
-- GitHub: [@yourusername](https://github.com/AthulSabu2002)
+- GitHub: [@AthulSabu2002](https://github.com/AthulSabu2002)
 
 ## 🙏 Acknowledgments
 
