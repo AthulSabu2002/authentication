@@ -70,8 +70,40 @@ const registerUser = asyncHandler(async(req, res) => {
     return res.status(201).json({ message: 'User registered successfully.' });
 });
 
+const verifyToken = asyncHandler(async(req, res) => {
+    try {
+
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ valid: false });
+        }
+
+        const token = authHeader.split(' ')[1];
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(decoded.userId).select('-password');
+        if (!user) {
+            return res.status(401).json({ valid: false });
+        }
+
+        return res.status(200).json({ 
+            valid: true,
+            user: {
+                id: user._id,
+                email: user.email,
+                fullName: user.fullName
+            }
+        });
+
+    } catch (error) {
+        return res.status(401).json({ valid: false });
+    }
+});
+
 
 module.exports = {
     loginUser,
-    registerUser
+    registerUser,
+    verifyToken
 }

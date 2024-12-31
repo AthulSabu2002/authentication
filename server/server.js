@@ -49,20 +49,27 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', userRouter);
+app.use('/api/users', userRouter);
 
-app.use(function(req, res, next) {
-  next(createError(404));
+// Handle 404 - Route not found
+app.use('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'error',
+    message: `Cannot ${req.method} ${req.originalUrl}`,
+    data: null
+  });
 });
 
-// Error handling middleware
+// Global error handling middleware
 app.use((err, req, res, next) => {
-    const statusCode = res.statusCode ? res.statusCode : 500;
-    
-    res.status(statusCode).json({
-        message: err.message,
-        stack: process.env.NODE_ENV === 'production' ? null : err.stack
-    });
+  const statusCode = err.statusCode || res.statusCode || 500;
+  
+  res.status(statusCode).json({
+    status: 'error',
+    message: err.message || 'Internal Server Error',
+    data: null,
+    stack: process.env.NODE_ENV === 'production' ? null : err.stack
+  });
 });
 
 app.listen(port, () => {

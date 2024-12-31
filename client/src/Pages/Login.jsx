@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +7,13 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) {
+      navigate('/users/dashboard');
+    }
+  }, [navigate]);
 
   function handleEmailOnChange(event) {
     const inputValue = event.target.value;
@@ -23,7 +30,7 @@ function Login() {
   async function handleSignIn(e) {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/users/login', {
+      const response = await axios.post('http://localhost:3000/api/users/login', {
         email,
         password
       });
