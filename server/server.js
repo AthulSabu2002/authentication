@@ -55,12 +55,14 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-app.use(function(err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  res.status(err.status || 500);
-  res.render('error');
+// Error handling middleware
+app.use((err, req, res, next) => {
+    const statusCode = res.statusCode ? res.statusCode : 500;
+    
+    res.status(statusCode).json({
+        message: err.message,
+        stack: process.env.NODE_ENV === 'production' ? null : err.stack
+    });
 });
 
 app.listen(port, () => {

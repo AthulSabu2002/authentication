@@ -1,10 +1,12 @@
 import { useState } from "react";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   function handleEmailOnChange(event) {
     const inputValue = event.target.value;
@@ -25,8 +27,14 @@ function Login() {
         email,
         password
       });
-      console.log(response.data);
-      // Handle successful login here (e.g., store token, redirect)
+      
+      localStorage.setItem('authToken', response.data.token);
+      
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+
+      navigate('/users/dashboard');
     } catch (error) {
       const errorMessage = error.response?.data?.message || 
                           error.response?.data?.error || 

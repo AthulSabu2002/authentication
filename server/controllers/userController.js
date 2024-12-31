@@ -1,10 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const async = require('async');
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/userModel');
-
 
 const loginUser = asyncHandler(async(req, res) => {
     const { email, password } = req.body;
@@ -25,12 +24,25 @@ const loginUser = asyncHandler(async(req, res) => {
         return res.status(400).json({ message: 'Invalid email or password.' });
     }
     
-    
-    res.status(200).json({ message: 'Login successful.' });
+    // Generate JWT token
+    const token = jwt.sign(
+        { userId: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+    );
+
+
+    return res.status(200).json({ 
+        message: 'Login successful',
+        token,
+        user: {
+            id: user._id,
+            email: user.email,
+            fullName: user.fullName
+        }
+    });
 
 });
-
-
 
 const registerUser = asyncHandler(async(req, res) => {
     const { fullName, email, password } = req.body;
