@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-
-
 import Alert from '../components/Alert'
-// Custom Alert Component
-
 
 function Signup() {
   const [email, setEmail] = useState('');
@@ -18,55 +14,35 @@ function Signup() {
   });
 
   function handleEmailOnChange(event) {
-    const inputValue = event.target.value;
-    setEmail(inputValue);
+    setEmail(event.target.value);
     setErrors(prev => ({ ...prev, email: '', server: '' }));
   }
 
   function handlePasswordOnChange(event) {
-    const passwordValue = event.target.value;
-    setPassword(passwordValue);
+    setPassword(event.target.value);
     setErrors(prev => ({ ...prev, password: '', server: '' }));
   }
 
   function handleFullNameOnChange(event) {
-    const fullNameValue = event.target.value;
-    setFullName(fullNameValue);
+    setFullName(event.target.value);
     setErrors(prev => ({ ...prev, fullName: '', server: '' }));
   }
 
   async function handleSignUp(e) {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/users/signup', {
+      await axios.post('http://localhost:3000/api/users/signup', {
         fullName,
         email,
         password
       });
-      console.log(response.data);
     } catch (error) {
-      console.error('Error registering user:', error);
-      
-      if (error.response) {
-        const serverErrors = error.response.data.errors;
-        if (serverErrors) {
-          setErrors(prev => ({
-            ...prev,
-            ...serverErrors,
-            server: error.response.data.message || 'Registration failed. Please try again.'
-          }));
-        } else {
-          setErrors(prev => ({
-            ...prev,
-            server: error.response.data.message || 'Registration failed. Please try again.'
-          }));
-        }
-      } else {
-        setErrors(prev => ({
-          ...prev,
-          server: 'Unable to connect to server. Please try again later.'
-        }));
-      }
+      const errorMessage = error.response?.data.message || 'Registration failed. Please try again.';
+      setErrors(prev => ({
+        ...prev,
+        ...(error.response?.data.errors || {}),
+        server: error.response ? errorMessage : 'Unable to connect to server. Please try again later.'
+      }));
     }
   }
 
