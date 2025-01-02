@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import GoogleAuthButton from '../components/GoogleAuthButton';
+import Cookies from 'js-cookie';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -12,8 +13,9 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem('authToken')) {
-      navigate('/users/dashboard');
+    const token = Cookies.get('token');
+    if (token) {
+      navigate('/users/dashboard', { replace: true });
     }
   }, [navigate]);
 
@@ -23,13 +25,12 @@ function Login() {
       const response = await axios.post(`${apiUrl}/api/users/login`, {
         email,
         password
-      });
+      }, { withCredentials: true });
       
-      localStorage.setItem('authToken', response.data.token);
       if (response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        Cookies.set('user', JSON.stringify(response.data.user));
       }
-      navigate('/users/dashboard');
+      navigate('/users/dashboard', { replace: true });
     } catch (error) {
       setError(error.response?.data?.message || 'An error occurred during sign in');
     }

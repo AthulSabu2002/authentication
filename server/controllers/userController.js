@@ -31,10 +31,17 @@ const loginUser = asyncHandler(async(req, res) => {
         { expiresIn: '24h' }
     );
 
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000
+    });
+
+    console.log('res-cookies', res.cookies)
 
     return res.status(200).json({ 
         message: 'Login successful',
-        token,
         user: {
             id: user._id,
             email: user.email,
@@ -72,13 +79,11 @@ const registerUser = asyncHandler(async(req, res) => {
 
 const verifyToken = asyncHandler(async(req, res) => {
     try {
-
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('cookies', req.cookies)
+        const token = req.cookies.token;
+        if (!token) {
             return res.status(401).json({ valid: false });
         }
-
-        const token = authHeader.split(' ')[1];
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -108,13 +113,26 @@ const googleAuthCallback = asyncHandler(async (req, res) => {
         { expiresIn: '24h' }
     );
 
-    // Redirect to frontend with token
-    res.redirect(`${process.env.FRONTEND_URL}/google-auth-success?token=${token}`);
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000
+    });
+
+    // Redirect to frontend
+    res.redirect(`${process.env.FRONTEND_URL}/google-auth-success`);
+});
+
+const logoutUser = asyncHandler(async (req, res) => {
+    res.cookie('token', '', { maxAge: 0, httpOnly: true, path: '/' });
+    return res.status(200).json({ message: 'Logout successful' });
 });
 
 module.exports = {
     loginUser,
     registerUser,
     verifyToken,
-    googleAuthCallback
+    googleAuthCallback,
+    logoutUser
 }

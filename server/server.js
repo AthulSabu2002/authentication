@@ -16,7 +16,12 @@ const port = process.env.PORT || 3000;
 const userRouter = require('./routes/userRouter');
 const passport = require('./config/passport');
 
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:5173', // Your frontend URL
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+
+app.use(cors(corsOptions));
 app.use(flash());
 app.use(logger('dev'));
 app.use(express.json());
@@ -32,7 +37,12 @@ app.use(
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 }
+    cookie: { 
+      maxAge: 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+      httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+      sameSite: 'strict' // Prevent CSRF attacks
+    }
   })
 );
 

@@ -8,7 +8,6 @@ function GoogleAuthSuccess() {
   useEffect(() => {
     const token = searchParams.get('token');
     if (token) {
-      localStorage.setItem('authToken', token);
       navigate('/users/dashboard');
     } else {
       navigate('/login');

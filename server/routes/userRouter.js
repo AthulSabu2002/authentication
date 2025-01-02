@@ -5,6 +5,7 @@ const {
     loginUser, 
     registerUser,
     verifyToken,
+    logoutUser,
     googleAuthCallback
 } = require('../controllers/userController');
 
@@ -13,6 +14,8 @@ const router = express.Router();
 router.route("/login").post(loginUser);
 
 router.route("/signup").post(registerUser);
+
+router.post('/logout', logoutUser);
 
 router.route("/verify-token").get(verifyToken);
 
