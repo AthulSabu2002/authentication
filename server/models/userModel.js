@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const userSchema = new mongoose.Schema({
     fullName: String,
     username: String,
@@ -13,11 +12,10 @@ const userSchema = new mongoose.Schema({
     },
     otp: String,
     resetPasswordToken: String,
-    resetPasswordExpires: Date,
+    resetPasswordExpire: Date,
 }, {
     timestamps: true,
 });
-
 
 const User = mongoose.model("User", userSchema);
 

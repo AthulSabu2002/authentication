@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 const async = require('async');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { sendResetEmail } = require('../config/emailConfig');
 
 const User = require('../models/userModel');
 
@@ -38,7 +40,6 @@ const loginUser = asyncHandler(async(req, res) => {
         maxAge: 24 * 60 * 60 * 1000
     });
 
-    console.log('res-cookies', res.cookies)
 
     return res.status(200).json({ 
         message: 'Login successful',
@@ -79,7 +80,6 @@ const registerUser = asyncHandler(async(req, res) => {
 
 const verifyToken = asyncHandler(async(req, res) => {
     try {
-        console.log('cookies', req.cookies)
         const token = req.cookies.token;
         if (!token) {
             return res.status(401).json({ valid: false });
@@ -129,10 +129,62 @@ const logoutUser = asyncHandler(async (req, res) => {
     return res.status(200).json({ message: 'Logout successful' });
 });
 
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    console.log(user)
+
+    if (!user) {
+        return res.status(404).json({ message: 'No user found with this email' });
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpire = Date.now() + 3600000; // 1 hour
+
+    await user.save();
+
+    try {
+        await sendResetEmail(email, resetToken);
+        res.status(200).json({ message: 'Password reset email sent' });
+    } catch (error) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save();
+        res.status(500).json({ message: 'Error sending reset email' });
+    }
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+    const { token, password } = req.body;
+
+    const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        return res.status(400).json({ message: 'Invalid or expired reset token' });
+    }
+
+    const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10);
+    user.password = await bcrypt.hash(password, saltRounds);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successful' });
+});
+
 module.exports = {
     loginUser,
     registerUser,
     verifyToken,
     googleAuthCallback,
-    logoutUser
+    logoutUser,
+    forgotPassword,
+    resetPassword
 }

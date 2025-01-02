@@ -6,7 +6,9 @@ const {
     registerUser,
     verifyToken,
     logoutUser,
-    googleAuthCallback
+    googleAuthCallback,
+    forgotPassword,
+    resetPassword
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -27,5 +29,8 @@ router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     googleAuthCallback
 );
+
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 
 module.exports = router;
