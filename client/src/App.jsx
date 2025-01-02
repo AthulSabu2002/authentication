@@ -4,6 +4,7 @@ import Login from './Pages/Login'
 import Signup from './Pages/Signup'
 import Dashboard from './Pages/Dashboard'
 import NotFound from './Pages/NotFound'
+import GoogleAuthSuccess from './Pages/GoogleAuthSuccess'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/google-auth-success" element={<GoogleAuthSuccess />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

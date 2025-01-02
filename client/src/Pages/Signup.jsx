@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
-import Alert from '../components/Alert'
+import Alert from '../components/Alert';
+import GoogleAuthButton from '../components/GoogleAuthButton';
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 function Signup() {
   const [email, setEmail] = useState('');
@@ -31,7 +34,7 @@ function Signup() {
   async function handleSignUp(e) {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/api/users/signup', {
+      await axios.post(`${apiUrl}/api/users/signup`, {
         fullName,
         email,
         password
@@ -58,6 +61,17 @@ function Signup() {
             {errors.server && (
               <Alert>{errors.server}</Alert>
             )}
+
+            <div className="mb-6">
+              <GoogleAuthButton />
+            </div>
+            
+            <div className="relative flex items-center justify-center mb-6">
+              <div className="border-t border-gray-300 flex-grow"></div>
+              <span className="mx-4 text-sm text-gray-500">or</span>
+              <div className="border-t border-gray-300 flex-grow"></div>
+            </div>
+
             <div className="divide-y divide-gray-200">
               <form onSubmit={handleSignUp} className="py-8 text-base leading-6 space-y-6 sm:text-lg sm:leading-7">
                 <div className="relative">

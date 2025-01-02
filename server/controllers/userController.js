@@ -101,9 +101,20 @@ const verifyToken = asyncHandler(async(req, res) => {
     }
 });
 
+const googleAuthCallback = asyncHandler(async (req, res) => {
+    const token = jwt.sign(
+        { userId: req.user._id, email: req.user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+    );
+
+    // Redirect to frontend with token
+    res.redirect(`${process.env.FRONTEND_URL}/google-auth-success?token=${token}`);
+});
 
 module.exports = {
     loginUser,
     registerUser,
-    verifyToken
+    verifyToken,
+    googleAuthCallback
 }

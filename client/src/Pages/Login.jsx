@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import GoogleAuthButton from '../components/GoogleAuthButton';
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -17,7 +20,7 @@ function Login() {
   async function handleSignIn(e) {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/users/login', {
+      const response = await axios.post(`${apiUrl}/api/users/login`, {
         email,
         password
       });
@@ -44,6 +47,17 @@ function Login() {
                 <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
+            
+            <div className="mb-6">
+              <GoogleAuthButton />
+            </div>
+            
+            <div className="relative flex items-center justify-center mb-6">
+              <div className="border-t border-gray-300 flex-grow"></div>
+              <span className="mx-4 text-sm text-gray-500">or</span>
+              <div className="border-t border-gray-300 flex-grow"></div>
+            </div>
+
             <form onSubmit={handleSignIn} className="py-8 text-base leading-6 space-y-6 sm:text-lg sm:leading-7">
               <div className="relative">
                 <input 

@@ -1,4 +1,5 @@
 import axios from 'axios';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export const verifyToken = async () => {
   const token = localStorage.getItem('authToken');
@@ -6,7 +7,7 @@ export const verifyToken = async () => {
   if (!token) return false;
   
   try {
-    const response = await axios.get('http://localhost:3000/api/users/verify-token', {
+    const response = await axios.get(`${apiUrl}/api/users/verify-token`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

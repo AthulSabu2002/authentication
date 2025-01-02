@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const passport = require('passport');
 const session = require('express-session');
 const connectDb = require("./config/connectDb");
 const dotenv = require('dotenv').config();
@@ -15,6 +14,7 @@ const cors = require('cors');
 const port = process.env.PORT || 3000;
 
 const userRouter = require('./routes/userRouter');
+const passport = require('./config/passport');
 
 app.use(cors());
 app.use(flash());
