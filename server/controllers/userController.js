@@ -158,19 +158,23 @@ const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
-    const { token, password } = req.body;
+    const { token, newPassword } = req.body;
+
+    console.log(req.body);
 
     const user = await User.findOne({
         resetPasswordToken: token,
         resetPasswordExpire: { $gt: Date.now() }
     });
 
+    console.log(user);
+
     if (!user) {
         return res.status(400).json({ message: 'Invalid or expired reset token' });
     }
 
     const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS || '10', 10);
-    user.password = await bcrypt.hash(password, saltRounds);
+    user.password = await bcrypt.hash(newPassword, saltRounds);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
 
