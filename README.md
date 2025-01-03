@@ -11,8 +11,6 @@ A full-stack authentication system built with the MERN stack (MongoDB, Express.j
 - Modern React frontend with Tailwind CSS
 - Form validation and error handling
 - Protected routes and authorized API endpoints
-
-### Upcoming Features
 - OAuth 2.0 integration (Google)
 - Password reset functionality
 - Email verification
@@ -105,10 +103,6 @@ POST /api/users/signup - Register a new user
 POST /api/users/login - Login user
 POST /api/users/logout - Logout user
 GET /api/users/dashboard - Get user profile (protected)
-```
-
-### Future OAuth Routes
-```
 GET /api/users/google - Google OAuth
 ```
 
