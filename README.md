@@ -17,7 +17,6 @@ A full-stack authentication system built with the MERN stack (MongoDB, Express.j
 - Password reset functionality
 - Email verification
 - Session management
-- Account deletion
 
 ## 🛠️ Tech Stack
 
