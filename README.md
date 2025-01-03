@@ -13,7 +13,7 @@ A full-stack authentication system built with the MERN stack (MongoDB, Express.j
 - Protected routes and authorized API endpoints
 
 ### Upcoming Features
-- OAuth 2.0 integration (Google, GitHub)
+- OAuth 2.0 integration (Google)
 - Password reset functionality
 - Email verification
 - Session management
@@ -101,16 +101,15 @@ auth-system/
 
 ### Authentication Routes
 ```
-POST /api/auth/signup - Register a new user
-POST /api/auth/login - Login user
-POST /api/auth/logout - Logout user
-GET /api/auth/profile - Get user profile (protected)
+POST /api/users/signup - Register a new user
+POST /api/users/login - Login user
+POST /api/users/logout - Logout user
+GET /api/users/dashboard - Get user profile (protected)
 ```
 
 ### Future OAuth Routes
 ```
-GET /api/auth/google - Google OAuth
-GET /api/auth/github - GitHub OAuth
+GET /api/users/google - Google OAuth
 ```
 
 ## 🔐 Security Features
