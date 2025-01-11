@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import GoogleAuthButton from '../components/GoogleAuthButton';
@@ -13,13 +13,6 @@ function Login() {
   const [error, setError] = useState('');
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = Cookies.get('token');
-    if (token) {
-      navigate('/users/dashboard', { replace: true });
-    }
-  }, [navigate]);
 
   async function handleSignIn(e) {
     e.preventDefault();
