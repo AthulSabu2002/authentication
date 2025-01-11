@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Cookies from 'js-cookie';
 import ProtectedRoute from './components/ProtectedRoute'
 import Login from './Pages/Login'
@@ -10,15 +10,14 @@ import GoogleAuthSuccess from './Pages/GoogleAuthSuccess'
 import ResetPassword from './Pages/ResetPassword'
 
 function App() {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const user = useMemo(() => Cookies.get('user'), []);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(!!user);
 
   useEffect(() => {
-    const user = Cookies.get('user');
     if (user) {
       setIsUserLoggedIn(true);
     }
-  }, []);
-
+  }, [user]);
 
   return (
     <Router>
