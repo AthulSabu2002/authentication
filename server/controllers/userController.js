@@ -88,7 +88,7 @@ const registerUser = asyncHandler(async(req, res) => {
 
     await newUser.save();
 
-    return res.status(201).json({ message: 'User registered successfully.' });
+    return res.status(201).json({ message: 'Registration successfull. Login to Continue' });
 });
 
 const verifyToken = asyncHandler(async(req, res) => {

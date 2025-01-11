@@ -9,6 +9,7 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [success, setSuccess] = useState('');
   const [errors, setErrors] = useState({
     server: '',
     email: '',
@@ -33,12 +34,26 @@ function Signup() {
 
   async function handleSignUp(e) {
     e.preventDefault();
+    setSuccess('');
+    setErrors(prev => ({ ...prev, server: '' }));
+
     try {
-      await axios.post(`${apiUrl}/api/users/signup`, {
+      const response = await axios.post(`${apiUrl}/api/users/signup`, {
         fullName,
         email,
         password
       });
+      setSuccess(response.data.message);
+      // Clear form
+      setEmail('');
+      setPassword('');
+      setFullName('');
+      
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
+
     } catch (error) {
       const errorMessage = error.response?.data.message || 'Registration failed. Please try again.';
       setErrors(prev => ({
@@ -58,8 +73,11 @@ function Signup() {
             <div>
               <h1 className="text-2xl font-semibold text-center mb-8">Create Account</h1>
             </div>
+            {success && (
+              <Alert variant="success">{success}</Alert>
+            )}
             {errors.server && (
-              <Alert>{errors.server}</Alert>
+              <Alert variant="error">{errors.server}</Alert>
             )}
 
             <div className="mb-6">
