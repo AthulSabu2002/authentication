@@ -20,11 +20,24 @@ const loginUser = asyncHandler(async(req, res) => {
         return res.status(400).json({ message: 'Invalid email or password.' });
     }
 
+    if (user.isLocked()) {
+        return res.status(403).json({ message: 'Account is locked. Try after 15 minutes.' });
+    }
+
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
+        user.loginAttempts += 1;
+        if (user.loginAttempts >= 5) {
+            user.lockUntil = Date.now() + 15 * 60 * 1000; // Lock for 15 minutes
+        }
+        await user.save();
         return res.status(400).json({ message: 'Invalid email or password.' });
     }
+
+    user.loginAttempts = 0;
+    user.lockUntil = undefined;
+    await user.save();
     
     // Generate JWT token
     const token = jwt.sign(

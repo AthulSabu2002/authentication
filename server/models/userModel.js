@@ -13,9 +13,21 @@ const userSchema = new mongoose.Schema({
     otp: String,
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    loginAttempts: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    lockUntil: {
+        type: Date
+    }
 }, {
     timestamps: true,
 });
+
+userSchema.methods.isLocked = function() {
+    return !!(this.lockUntil && this.lockUntil > Date.now());
+};
 
 const User = mongoose.model("User", userSchema);
 
